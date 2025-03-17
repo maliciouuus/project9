@@ -1,0 +1,23 @@
+{% extends 'listings/base.html' %}
+
+{% block title %}Supprimer la critique{% endblock title %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="text-center">Supprimer la critique</h2>
+            </div>
+            <div class="card-body">
+                <p class="text-center">Êtes-vous sûr de vouloir supprimer la critique "{{ review.headline }}" ?</p>
+                <form method="post" class="text-center">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Supprimer</button>
+                    <a href="{% url 'posts' %}" class="btn btn-secondary">Annuler</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %} 

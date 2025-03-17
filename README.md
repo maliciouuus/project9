@@ -38,12 +38,20 @@ pip install -r requirements.txt
 python manage.py migrate
 ```
 
-5. Créer un superutilisateur (optionnel)
+5. Créer un superutilisateur
 ```bash
 python manage.py createsuperuser
 ```
 
-6. Lancer le serveur
+6. (Optionnel) Créer des utilisateurs de test
+```bash
+python manage.py shell -c "from django.contrib.auth.models import User; User.objects.create_user('user1', password='testpass123'); User.objects.create_user('user2', password='testpass123')"
+```
+Cette commande créera deux utilisateurs de test :
+- user1 (mot de passe : testpass123)
+- user2 (mot de passe : testpass123)
+
+7. Lancer le serveur
 ```bash
 python manage.py runserver
 ```
