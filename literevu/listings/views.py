@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth import login
+from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.db.models import CharField, Value, Q
@@ -52,9 +52,7 @@ def feed(request):
     reviews = reviews.annotate(content_type=Value("REVIEW", CharField()))
 
     posts = sorted(
-        chain(reviews, tickets),
-        key=lambda post: post.time_created,
-        reverse=True
+        chain(reviews, tickets), key=lambda post: post.time_created, reverse=True
     )
 
     return render(request, "listings/feed.html", context={"posts": posts})
@@ -207,12 +205,10 @@ def follow_users(request):
                 )
             else:
                 UserFollows.objects.get_or_create(
-                    user=request.user,
-                    followed_user=user_to_follow
+                    user=request.user, followed_user=user_to_follow
                 )
                 messages.success(
-                    request,
-                    f"Vous suivez maintenant {user_to_follow.username}"
+                    request, f"Vous suivez maintenant {user_to_follow.username}"
                 )
             return redirect("follow-users")
 
@@ -399,3 +395,20 @@ def review_delete(request, review_id):
         review.delete()
         return redirect("posts")
     return render(request, "listings/review_delete.html", {"review": review})
+
+
+def logout_view(request):
+    """
+    Déconnecte l'utilisateur et le redirige vers la page de connexion.
+    Fonctionne avec GET et POST pour plus de flexibilité.
+
+    Args:
+        request: La requête HTTP
+
+    Returns:
+        HttpResponse: Redirection vers la page de connexion
+    """
+    if request.user.is_authenticated:
+        logout(request)
+        messages.success(request, "Vous avez été déconnecté avec succès.")
+    return redirect("login")

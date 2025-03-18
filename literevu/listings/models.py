@@ -1,3 +1,14 @@
+"""
+Modèles de données pour l'application LITRevu.
+
+Ce fichier définit la structure de la base de données de l'application.
+Il contient quatre modèles principaux :
+- Ticket : pour les demandes de critique
+- Review : pour les critiques
+- UserFollows : pour les abonnements entre utilisateurs
+- UserBlocks : pour les blocages entre utilisateurs
+"""
+
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.conf import settings
 from django.db import models
@@ -6,8 +17,14 @@ from django.db import models
 class Ticket(models.Model):
     """
     Modèle représentant une demande de critique.
+
     Un ticket est créé par un utilisateur pour demander des critiques sur un
-    livre/article.
+    livre ou un article. Il contient :
+    - Un titre obligatoire
+    - Une description optionnelle
+    - Une image de couverture optionnelle
+    - Une référence à l'utilisateur qui l'a créé
+    - La date et l'heure de création
     """
 
     title = models.CharField(
@@ -32,14 +49,22 @@ class Ticket(models.Model):
     )
 
     def __str__(self):
+        """Représentation textuelle du ticket"""
         return f"{self.title}"
 
 
 class Review(models.Model):
     """
     Modèle représentant une critique.
+
     Une critique est créée par un utilisateur en réponse à un ticket.
-    Elle contient une note et un commentaire sur le livre/article.
+    Elle contient :
+    - Une référence au ticket concerné
+    - Une note de 0 à 5 étoiles
+    - Un titre (headline)
+    - Un contenu détaillé
+    - Une référence à l'utilisateur qui l'a créée
+    - La date et l'heure de création
     """
 
     ticket = models.ForeignKey(
@@ -49,11 +74,11 @@ class Review(models.Model):
     )
     rating = models.PositiveSmallIntegerField(
         validators=[MinValueValidator(0), MaxValueValidator(5)],
-        help_text="La note attribuée (entre 0 et 5)",
+        help_text="La note attribuée (entre 0 et 5 étoiles)",
     )
     headline = models.CharField(max_length=128, help_text="Le titre de la critique")
     body = models.TextField(
-        max_length=8192, blank=True, help_text="Le contenu de la critique"
+        max_length=8192, blank=True, help_text="Le contenu détaillé de la critique"
     )
     user = models.ForeignKey(
         to=settings.AUTH_USER_MODEL,
@@ -65,13 +90,20 @@ class Review(models.Model):
     )
 
     def __str__(self):
-        return f"Review of {self.ticket.title} by {self.user.username}"
+        """Représentation textuelle de la critique"""
+        return f"Critique de {self.ticket.title} par {self.user.username}"
 
 
 class UserFollows(models.Model):
     """
     Modèle représentant une relation d'abonnement entre deux utilisateurs.
-    Permet de suivre les publications d'autres utilisateurs.
+
+    Permet à un utilisateur de suivre les publications d'autres utilisateurs.
+    La relation est unidirectionnelle : si A suit B, B ne suit pas automatiquement A.
+
+    Attributs :
+    - user : l'utilisateur qui suit
+    - followed_user : l'utilisateur qui est suivi
     """
 
     user = models.ForeignKey(
@@ -88,21 +120,32 @@ class UserFollows(models.Model):
     )
 
     class Meta:
-        # ensures we don't get multiple UserFollows instances
-        # for unique user-user_followed pairs
-        unique_together = (
-            "user",
-            "followed_user",
-        )
+        """
+        Métadonnées du modèle.
+        Garantit qu'un utilisateur ne peut pas suivre plusieurs fois la même personne.
+        """
+
+        unique_together = ("user", "followed_user")
 
     def __str__(self):
-        return f"{self.user} follows {self.followed_user}"
+        """Représentation textuelle de la relation de suivi"""
+        return f"{self.user} suit {self.followed_user}"
 
 
 class UserBlocks(models.Model):
     """
     Modèle représentant une relation de blocage entre deux utilisateurs.
-    Permet de bloquer les publications d'autres utilisateurs.
+
+    Permet à un utilisateur de bloquer les publications d'autres utilisateurs.
+    Quand un utilisateur en bloque un autre :
+    - Il ne voit plus ses publications
+    - Il ne peut plus le suivre
+    - L'autre utilisateur ne peut plus le suivre
+
+    Attributs :
+    - user : l'utilisateur qui bloque
+    - blocked_user : l'utilisateur qui est bloqué
+    - time_created : date et heure du blocage
     """
 
     user = models.ForeignKey(
@@ -122,10 +165,13 @@ class UserBlocks(models.Model):
     )
 
     class Meta:
-        unique_together = (
-            "user",
-            "blocked_user",
-        )
+        """
+        Métadonnées du modèle.
+        Garantit qu'un utilisateur ne peut pas bloquer plusieurs fois la même personne.
+        """
+
+        unique_together = ("user", "blocked_user")
 
     def __str__(self):
-        return f"{self.user} blocks {self.blocked_user}"
+        """Représentation textuelle de la relation de blocage"""
+        return f"{self.user} bloque {self.blocked_user}"
