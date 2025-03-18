@@ -1,31 +1,48 @@
 # LITRevu
 
-Application web de partage de critiques de livres développée avec Django.
+Application web Django permettant le partage et la critique de livres entre utilisateurs.
 
 ## Fonctionnalités
 
-- Système d'authentification (inscription, connexion, déconnexion)
-- Création de tickets (demandes de critique)
-- Création de critiques (avec ou sans ticket associé)
-- Système de notation (0 à 5 étoiles)
-- Flux d'activité personnalisé
-- Système d'abonnement entre utilisateurs
-- Gestion des posts (modification, suppression)
+- **Système d'authentification**
+  - Inscription et connexion des utilisateurs
+  - Protection des routes pour utilisateurs authentifiés
+
+- **Gestion des tickets**
+  - Création de demandes de critique
+  - Modification et suppression de ses tickets
+  - Upload d'images de couverture
+
+- **Gestion des critiques**
+  - Création de critiques en réponse aux tickets
+  - Création de critiques avec ticket simultané
+  - Système de notation (0-5 étoiles)
+  - Modification et suppression de ses critiques
+
+- **Système de suivi**
+  - Abonnement à d'autres utilisateurs
+  - Gestion des abonnements et abonnés
+  - Système de blocage d'utilisateurs
+
+- **Flux d'activité**
+  - Affichage des tickets et critiques des utilisateurs suivis
+  - Tri chronologique des publications
+  - Filtrage selon les relations (blocages)
 
 ## Installation
 
-1. Cloner le repository
+1. Cloner le projet
 ```bash
-git clone <repository-url>
-cd literevu
+git clone <url-du-repo>
+cd project9
 ```
 
-2. Créer un environnement virtuel
+2. Créer et activer l'environnement virtuel
 ```bash
 python -m venv env
 source env/bin/activate  # Linux/MacOS
 # ou
-env\Scripts\activate  # Windows
+env\Scripts\activate     # Windows
 ```
 
 3. Installer les dépendances
@@ -33,82 +50,49 @@ env\Scripts\activate  # Windows
 pip install -r requirements.txt
 ```
 
-4. Appliquer les migrations
+4. Initialiser le projet
 ```bash
-python manage.py migrate
+./init_project.sh
 ```
 
-5. Créer un superutilisateur
-```bash
-python manage.py createsuperuser
-```
+## Scripts utilitaires
 
-6. (Optionnel) Créer des utilisateurs de test
-```bash
-python manage.py shell -c "from django.contrib.auth.models import User; User.objects.create_user('user1', password='testpass123'); User.objects.create_user('user2', password='testpass123')"
-```
-Cette commande créera deux utilisateurs de test :
-- user1 (mot de passe : testpass123)
-- user2 (mot de passe : testpass123)
+- `init_project.sh` : Initialise/réinitialise le projet
+  - Crée les migrations
+  - Configure la base de données
+  - Crée un superutilisateur
+  - Crée des utilisateurs de test
 
-7. Lancer le serveur
-```bash
-python manage.py runserver
-```
-
-L'application sera accessible à l'adresse : http://127.0.0.1:8000/
-
-## Qualité du code
-
-Le projet utilise Black et Flake8 pour maintenir un code propre et cohérent.
-
-Pour formater le code avec Black :
-```bash
-black .
-```
-
-Pour vérifier le code avec Flake8 :
-```bash
-flake8
-```
+- `clean_project.sh` : Nettoie le projet
+  - Supprime l'environnement virtuel
+  - Supprime la base de données
+  - Supprime les fichiers cache
+  - Supprime les migrations
 
 ## Comptes de test
 
 | Identifiant | Mot de passe |
 |-------------|--------------|
-| admin       | admin123     |
 | user1       | testpass123  |
 | user2       | testpass123  |
 
-## Structure du projet
-
-```
-literevu/
-├── listings/              # Application principale
-│   ├── models.py         # Modèles de données
-│   ├── views.py          # Vues
-│   ├── forms.py          # Formulaires
-│   ├── urls.py           # URLs
-│   └── templates/        # Templates HTML
-├── static/               # Fichiers statiques
-├── media/               # Fichiers uploadés
-└── manage.py            # Script de gestion Django
-```
-
-## Technologies utilisées
+## Technologies
 
 - Python 3.9+
 - Django 5.0
 - Bootstrap 5.1
 - SQLite3
-- Black (formatage de code)
-- Flake8 (linting)
+
+## Qualité du code
+
+Le projet utilise :
+- Black pour le formatage
+- Flake8 pour le linting
 
 ## Accessibilité
 
 L'application respecte les normes WCAG :
 - Navigation au clavier
 - Contraste suffisant
-- Textes alternatifs pour les images
-- Labels explicites pour les formulaires
+- Textes alternatifs
 - Structure sémantique HTML5 
