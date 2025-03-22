@@ -32,10 +32,10 @@ rm -rf literevu/staticfiles/
 echo "🗑️  Suppression des fichiers .egg-info..."
 rm -rf *.egg-info/
 
-# Supprimer les fichiers de configuration WSGI/ASGI (non requis)
-echo "🗑️  Suppression des fichiers WSGI/ASGI..."
-rm -f literevu/literevu/wsgi.py
-rm -f literevu/literevu/asgi.py
+# NE PLUS SUPPRIMER les fichiers de configuration WSGI/ASGI car ils sont nécessaires !
+# echo "🗑️  Suppression des fichiers WSGI/ASGI..."
+# rm -f literevu/literevu/wsgi.py
+# rm -f literevu/literevu/asgi.py
 
 echo "✨ Nettoyage terminé !"
 echo "

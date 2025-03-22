@@ -55,6 +55,30 @@ pip install -r requirements.txt
 ./init_project.sh
 ```
 
+5. Lancer le serveur (à partir du dossier literevu)
+```bash
+cd literevu  # Important : être dans le bon dossier
+python3 manage.py runserver 8080
+```
+
+L'application sera accessible à l'adresse : http://127.0.0.1:8080/
+
+## Structure importante du projet
+
+```
+project9/             # Dossier racine du projet
+  ├── init_project.sh  # Script d'initialisation
+  ├── clean_project.sh # Script de nettoyage
+  └── literevu/        # Dossier principal de l'application
+      ├── manage.py    # Script de gestion Django
+      ├── literevu/    # Configuration du projet
+      │   ├── settings.py
+      │   ├── urls.py
+      │   ├── wsgi.py   # Nécessaire - ne pas supprimer
+      │   └── asgi.py   # Nécessaire - ne pas supprimer
+      └── listings/    # Application principale
+```
+
 ## Scripts utilitaires
 
 - `init_project.sh` : Initialise/réinitialise le projet
@@ -68,6 +92,21 @@ pip install -r requirements.txt
   - Supprime la base de données
   - Supprime les fichiers cache
   - Supprime les migrations
+  - **Ne supprime pas les fichiers wsgi.py et asgi.py qui sont nécessaires**
+
+## ⚠️ Important : problèmes connus et solutions
+
+1. **Erreur "ModuleNotFoundError: No module named 'literevu.settings'"**
+   - Solution : Assurez-vous d'exécuter les commandes depuis le dossier `literevu`
+   - Commande : `cd literevu` puis `python3 manage.py runserver 8080`
+
+2. **Erreur "That port is already in use"**
+   - Solution : Utilisez un autre port ou tuez les processus existants
+   - Commande : `pkill -f runserver` puis `python3 manage.py runserver 8080`
+   
+3. **Erreur "ModuleNotFoundError: No module named 'literevu.wsgi'"**
+   - Solution : Ne supprimez jamais les fichiers wsgi.py et asgi.py
+   - Si supprimés, utilisez le script `clean_project.sh` modifié puis réinitialisez
 
 ## Comptes de test
 
